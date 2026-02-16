@@ -3,6 +3,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platform: AVR/ESP](https://img.shields.io/badge/Platform-AVR%20%7C%20ESP8266%20%7C%20ESP32-blue.svg)](#)
+[![Compile Test](https://github.com/iskakfatoni/IskakINO_Storage/actions/workflows/compile_test.yml/badge.svg)](https://github.com/iskakfatoni/IskakINO_Storage/actions/workflows/compile_test.yml)
 
 IskakINO_Storage adalah library penyimpanan cerdas yang secara otomatis memilih "Engine" terbaik berdasarkan board yang Anda gunakan. Library ini menggabungkan kemudahan penggunaan dengan keamanan data tingkat tinggi (CRC32) dan perlindungan umur memori (Wear Leveling).
 
