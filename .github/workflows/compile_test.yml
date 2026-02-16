@@ -34,11 +34,13 @@ jobs:
             arduino-cli core install esp32:esp32 --additional-urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
           fi
 
-      - name: Compile Library Examples
+      - name: Compile All Library Examples
         run: |
-          # 1. Siapkan folder library agar arduino-cli mengenali IskakINO_Storage
           mkdir -p $HOME/Arduino/libraries/IskakINO_Storage
           cp -r . $HOME/Arduino/libraries/IskakINO_Storage/
           
-          # 2. Compile Example 01 (Sebagai Test Utama)
-          arduino-cli compile --fqbn ${{ matrix.board }} $HOME/Arduino/libraries/IskakINO_Storage/examples/01_BasicUsage/01_BasicUsage.ino
+          # Loop untuk mencari semua file .ino di folder examples dan meng-compilenya
+          for example in $(find $HOME/Arduino/libraries/IskakINO_Storage/examples -name "*.ino"); do
+            echo "Compiling $example..."
+            arduino-cli compile --fqbn ${{ matrix.board }} $example
+          done
