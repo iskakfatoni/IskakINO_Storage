@@ -1,0 +1,26 @@
+#######################################
+# Syntax Coloring Map For IskakINO_Storage
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1) -> Akan berwarna Orange/Merah
+#######################################
+IskakINO_Storage	KEYWORD1
+IskakStorage	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2) -> Akan berwarna Biru/Cokelat
+#######################################
+begin	KEYWORD2
+save	KEYWORD2
+load	KEYWORD2
+clear	KEYWORD2
+isValid	KEYWORD2
+validate	KEYWORD2
+commit	KEYWORD2
+
+#######################################
+# Constants (LITERAL1) -> Akan berwarna Biru Terang
+#######################################
+ISKAK_STORAGE_MAGIC	LITERAL1
+ISKAK_STORAGE_VERSION	LITERAL1
