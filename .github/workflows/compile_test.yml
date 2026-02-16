@@ -36,9 +36,9 @@ jobs:
 
       - name: Compile Library Examples
         run: |
-          # Membuat folder library agar arduino-cli bisa menemukannya
+          # 1. Siapkan folder library agar arduino-cli mengenali IskakINO_Storage
           mkdir -p $HOME/Arduino/libraries/IskakINO_Storage
           cp -r . $HOME/Arduino/libraries/IskakINO_Storage/
           
-          # Compile contoh HybridDemo.ino
-          arduino-cli compile --fqbn ${{ matrix.board }} examples/HybridDemo/HybridDemo.ino
+          # 2. Compile Example 01 (Sebagai Test Utama)
+          arduino-cli compile --fqbn ${{ matrix.board }} $HOME/Arduino/libraries/IskakINO_Storage/examples/01_BasicUsage/01_BasicUsage.ino
