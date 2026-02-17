@@ -5,6 +5,7 @@
  */
 
 #include <IskakINO_Storage.h>
+IskakINO_Storage IskakStorage;
 
 struct DeviceConfig {
   char owner[20];
