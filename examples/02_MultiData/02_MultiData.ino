@@ -4,6 +4,7 @@
  */
 
 #include <IskakINO_Storage.h>
+IskakINO_Storage IskakStorage;
 
 void setup() {
   Serial.begin(115200);
