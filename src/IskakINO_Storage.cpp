@@ -7,10 +7,3 @@
  */
 
 #include "IskakINO_Storage.h"
-
-/**
- * Inisialisasi objek global IskakStorage.
- * User hanya perlu memanggil IskakStorage.begin() di setup() 
- * tanpa perlu membuat objek baru.
- */
-//IskakINO_Storage IskakStorage;
