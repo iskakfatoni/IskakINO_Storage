@@ -13,4 +13,4 @@
  * User hanya perlu memanggil IskakStorage.begin() di setup() 
  * tanpa perlu membuat objek baru.
  */
-IskakINO_Storage IskakStorage;
+//IskakINO_Storage IskakStorage;
