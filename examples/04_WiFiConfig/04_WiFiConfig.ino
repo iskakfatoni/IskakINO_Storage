@@ -4,6 +4,7 @@
  */
 
 #include <IskakINO_Storage.h>
+IskakINO_Storage IskakStorage;
 
 // Struktur untuk menyimpan data WiFi
 struct WiFiConfig {
