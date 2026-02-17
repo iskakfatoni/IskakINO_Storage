@@ -147,5 +147,5 @@ class IskakINO_Storage {
     }
 };
 
-extern IskakINO_Storage IskakStorage;
+//extern IskakINO_Storage IskakStorage;
 #endif
