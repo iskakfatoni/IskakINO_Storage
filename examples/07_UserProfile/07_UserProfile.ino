@@ -4,7 +4,6 @@
  */
 
 #include <IskakINO_Storage.h>
-IskakINO_Storage IskakStorage;
 
 // Struktur data profil
 struct UserProfile {
