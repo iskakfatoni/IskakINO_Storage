@@ -2,6 +2,13 @@
  * src/IskakINO_Storage.h
  * Hybrid & Advanced Storage Engine (EEPROM, LittleFS, Preferences)
  * Updated: Added clear() method for Factory Reset
+ * Fixed:
+ *   - extern instance declaration diaktifkan (sebelumnya di-comment,
+ *     menyebabkan IskakStorage tidak dikenali linker)
+ *   - save() sekarang mengembalikan status tulis yang sebenarnya
+ *     (bukan selalu true)
+ *   - load() (ESP8266) sekarang mengecek hasil open() sebelum read()
+ *   - Bounds-check alamat terhadap EEPROM.length() pada jalur AVR
  */
 
 #ifndef ISKAKINO_STORAGE_H
@@ -47,7 +54,7 @@ class IskakINO_Storage {
       return ~crc;
     }
 
-    void _printDebug(String msg) {
+    void _printDebug(const __FlashStringHelper* msg) {
       if (_debug) {
         Serial.print(F("[IskakStorage] "));
         Serial.println(msg);
@@ -66,7 +73,7 @@ class IskakINO_Storage {
       _printDebug(F("Hybrid Engine Ready with CRC32 Protection."));
     }
 
-    // --- FUNGSI BARU: CLEAR (FACTORY RESET) ---
+    // --- CLEAR (FACTORY RESET) ---
     void clear() {
       _printDebug(F("Clearing all data (Factory Reset)..."));
       #if defined(ESP32)
@@ -90,7 +97,7 @@ class IskakINO_Storage {
       DataWrapper header;
       header.magic = ISKAK_STORAGE_MAGIC;
       header.version = ISKAK_STORAGE_VERSION;
-      header.crc = _calculateCRC32((uint8_t*)&value, sizeof(T));
+      header.crc = _calculateCRC32((const uint8_t*)&value, sizeof(T));
 
       uint8_t buffer[sizeof(DataWrapper) + sizeof(T)];
       memcpy(buffer, &header, sizeof(DataWrapper));
@@ -98,17 +105,35 @@ class IskakINO_Storage {
 
       #if defined(ESP32)
         char key[15]; sprintf(key, "a%d", address);
-        _prefs.putBytes(key, buffer, sizeof(buffer));
+        size_t written = _prefs.putBytes(key, buffer, sizeof(buffer));
+        if (written != sizeof(buffer)) {
+          _printDebug(F("ESP32: Write failed / incomplete."));
+          return false;
+        }
+        return true;
       #elif defined(ESP8266)
         char path[20]; sprintf(path, "/s%d.bin", address);
         File f = LittleFS.open(path, "w");
-        if (f) { f.write(buffer, sizeof(buffer)); f.close(); }
+        if (!f) {
+          _printDebug(F("ESP8266: Failed to open file for write."));
+          return false;
+        }
+        size_t written = f.write(buffer, sizeof(buffer));
+        f.close();
+        if (written != sizeof(buffer)) {
+          _printDebug(F("ESP8266: Write incomplete."));
+          return false;
+        }
+        return true;
       #else
-        uint8_t current[sizeof(buffer)];
+        // Bounds-check terhadap kapasitas EEPROM
+        if (address < 0 || (size_t)address + sizeof(buffer) > (size_t)EEPROM.length()) {
+          _printDebug(F("AVR: Address out of EEPROM bounds."));
+          return false;
+        }
         bool changed = false;
         for(size_t i=0; i<sizeof(buffer); i++) {
-          current[i] = EEPROM.read(address + i);
-          if(current[i] != buffer[i]) changed = true;
+          if(EEPROM.read(address + i) != buffer[i]) { changed = true; break; }
         }
         if(changed) {
           for(size_t i=0; i<sizeof(buffer); i++) EEPROM.write(address + i, buffer[i]);
@@ -116,8 +141,8 @@ class IskakINO_Storage {
         } else {
           _printDebug(F("AVR: Skipped (No Change)."));
         }
+        return true;
       #endif
-      return true;
     }
 
     template <typename T>
@@ -132,8 +157,15 @@ class IskakINO_Storage {
         char path[20]; sprintf(path, "/s%d.bin", address);
         if (!LittleFS.exists(path)) return false;
         File f = LittleFS.open(path, "r");
-        f.read(buffer, sizeof(buffer)); f.close();
+        if (!f) return false;
+        size_t readBytes = f.read(buffer, sizeof(buffer));
+        f.close();
+        if (readBytes != sizeof(buffer)) return false;
       #else
+        if (address < 0 || (size_t)address + sizeof(buffer) > (size_t)EEPROM.length()) {
+          _printDebug(F("AVR: Address out of EEPROM bounds."));
+          return false;
+        }
         for(size_t i=0; i<sizeof(buffer); i++) buffer[i] = EEPROM.read(address + i);
       #endif
 
@@ -141,11 +173,11 @@ class IskakINO_Storage {
       if (header.magic != ISKAK_STORAGE_MAGIC) return false;
 
       memcpy(&value, buffer + sizeof(DataWrapper), sizeof(T));
-      uint32_t currentCrc = _calculateCRC32((uint8_t*)&value, sizeof(T));
+      uint32_t currentCrc = _calculateCRC32((const uint8_t*)&value, sizeof(T));
       
       return (currentCrc == header.crc);
     }
 };
 
-//extern IskakINO_Storage IskakStorage;
+extern IskakINO_Storage IskakStorage;
 #endif
