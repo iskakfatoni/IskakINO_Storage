@@ -4,7 +4,6 @@
  */
 
 #include <IskakINO_Storage.h>
-IskakINO_Storage IskakStorage;
 
 // Definisikan struktur data yang ingin disimpan
 struct MySettings {
