@@ -5,7 +5,6 @@
  */
 
 #include <IskakINO_Storage.h>
-IskakINO_Storage IskakStorage;
 
 struct DeviceStats {
   uint32_t totalBoots;
