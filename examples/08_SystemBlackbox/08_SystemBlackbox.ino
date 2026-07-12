@@ -5,7 +5,6 @@
  */
 
 #include <IskakINO_Storage.h>
-IskakINO_Storage IskakStorage;
 
 // Struktur untuk menyimpan status sistem terakhir
 struct SystemLog {
