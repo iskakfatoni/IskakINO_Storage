@@ -15,9 +15,6 @@ begin	KEYWORD2
 save	KEYWORD2
 load	KEYWORD2
 clear	KEYWORD2
-isValid	KEYWORD2
-validate	KEYWORD2
-commit	KEYWORD2
 
 #######################################
 # Constants (LITERAL1) -> Akan berwarna Biru Terang
